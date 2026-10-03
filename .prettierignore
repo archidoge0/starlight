@@ -28,3 +28,5 @@ packages/starlight/__tests__/i18n/malformed-yaml-src/content/i18n/*.yml
 
 # GitHub Actions workflow files
 .github/workflows/*.yml
+# ghav harness files
+.github/workflows/ghav-*.yml

@@ -1,0 +1,34 @@
+name: "ghav human: CI"
+"on":
+  push:
+    branches:
+      - ghav/dev/3517
+    paths:
+      - .ghav/human
+env:
+  NODE_VERSION: 18
+  ASTRO_TELEMETRY_DISABLED: true
+jobs:
+  e2e-test:
+    name: Run E2E tests (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+      - name: Uninstall man-db
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get remove man-db
+      - uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061
+      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+      - run: pnpm i
+      - name: Test packages
+        run: pnpm -r test:e2e
